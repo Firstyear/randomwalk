@@ -1,5 +1,6 @@
 use mathru::statistics::distrib::{Normal, Distribution};
 use rayon::prelude::*;
+use std::fmt;
 
 // Rather than using an array for each parameter/result IE
 //
@@ -16,6 +17,18 @@ struct ModelResult {
     latency: usize,
     response: bool,
     evidence: Vec<f64>,
+}
+
+impl fmt::Display for ModelResult {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{},{},", self.response, self.latency)
+    }
+}
+
+fn to_csv(data: &[ModelResult]) {
+    data.iter().for_each(|d| {
+        println!("{}", d)
+    })
 }
 
 fn execute_model(
@@ -92,6 +105,7 @@ fn execute_model(
 }
 
 
+
 fn main() {
     println!("Hello, world!");
 }
@@ -113,8 +127,9 @@ mod tests {
             0.1,
             0.3,
             3.0,
-        )
-        .expect("Failed to run model");
+        ).expect("Failed to exec model");
         eprintln!("successful samples -> {:?}", res.len());
+
+        to_csv(res.as_slice());
     }
 }
